@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="c2845b95-4276-469e-b627-cbd0a1eeb38f" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="Flow" doc:id="b0e866ac-16b5-48e9-88f0-53573b15c5cf" >
+		<http:listener doc:name="Listener" doc:id="9e36e337-80cc-45b5-bab0-740e277d7021" config-ref="HTTP_Listener_config" path="/den" />
+		<ee:transform doc:name="Transform Message" doc:id="be25c987-5d86-4338-9e1a-5ae63226b9b5">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+import * from dw::core::Arrays
+import * from dw::core::Strings
+output application/json
+var numberArray = [1,2,3,4,5,6]
+var stringArray = ["max", "astro", "einstein"]
+---
+{
+  "numberArrayUpdated" : numberArray map ((value, index) -> value * value),
+  "stringArrayUpdated" : stringArray map ((value, index) -> index ++ " - " ++ capitalize(value)),
+   "indexOf":indexOf(numberArray,6),
+   "indexOf":indexOf(stringArray,"max"),
+   "drop":drop(numberArray,5),
+  "dropWhile": numberArray dropWhile $ > 6,
+  "divideBy": numberArray divideBy 2
+
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="arraysandencodingFlow" doc:id="df61fa9c-19f2-422a-baf3-b1103ea2c952" >
+	</flow>
+</mule>
